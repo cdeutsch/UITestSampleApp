@@ -14,25 +14,26 @@ namespace UITestSampleApp
 	{
 		const string _azureDataServiceUrl = @"https://mobile-864df958-bcca-401d-8f93-ae159cd5a9d3.azurewebsites.net";
 
-		bool isInitialized;
+		bool _isInitialized;
+		MobileServiceUser _user;
+		MobileServiceClient _mobileService;
 
-		public MobileServiceClient MobileService { get; set; }
 
 		public async Task Initialize()
 		{
-			if (isInitialized)
+			if (_isInitialized)
 				return;
 
 			// MobileServiceClient handles communication with our backend, auth, and more for us.
-			MobileService = new MobileServiceClient(_azureDataServiceUrl);
+			_mobileService = new MobileServiceClient(_azureDataServiceUrl);
 
 			// Configure online/offline sync.
 			var path = DependencyService.Get<IEnvironment>().GetFilePath("app.db");
 			var store = new MobileServiceSQLiteStore(path);
 			store.DefineTable<ListPageDataModel>();
-			await MobileService.SyncContext.InitializeAsync(store);//, new SyncHandler(MobileService));
+			await _mobileService.SyncContext.InitializeAsync(store);//, new SyncHandler(MobileService));
 
-			isInitialized = true;
+			_isInitialized = true;
 		}
 
 		#region Data Access
@@ -42,7 +43,7 @@ namespace UITestSampleApp
 
 			await SyncItems<T>();
 
-			return await MobileService.GetSyncTable<T>().ToEnumerableAsync();
+			return await _mobileService.GetSyncTable<T>().ToEnumerableAsync();
 		}
 
 		public async Task<T> GetItem<T>(string id) where T : EntityData
@@ -51,14 +52,14 @@ namespace UITestSampleApp
 
 			await SyncItems<T>();
 
-			return await MobileService.GetSyncTable<T>().LookupAsync(id);
+			return await _mobileService.GetSyncTable<T>().LookupAsync(id);
 		}
 
 		public async Task AddItem<T>(T item) where T : EntityData
 		{
 			await Initialize();
 
-			await MobileService.GetSyncTable<T>().InsertAsync(item);
+			await _mobileService.GetSyncTable<T>().InsertAsync(item);
 			await SyncItems<T>();
 		}
 
@@ -66,7 +67,7 @@ namespace UITestSampleApp
 		{
 			await Initialize();
 
-			await MobileService.GetSyncTable<T>().UpdateAsync(item);
+			await _mobileService.GetSyncTable<T>().UpdateAsync(item);
 			await SyncItems<T>();
 		}
 
@@ -74,7 +75,7 @@ namespace UITestSampleApp
 		{
 			await Initialize();
 
-			await MobileService.GetSyncTable<T>().DeleteAsync(item);
+			await _mobileService.GetSyncTable<T>().DeleteAsync(item);
 			await SyncItems<T>();
 		}
 
@@ -84,13 +85,43 @@ namespace UITestSampleApp
 
 			try
 			{
-				await MobileService.SyncContext.PushAsync();
-				await MobileService.GetSyncTable<T>().PullAsync($"all{typeof(T).Name}", MobileService.GetSyncTable<T>().CreateQuery());
+				await _mobileService.SyncContext.PushAsync();
+				await _mobileService.GetSyncTable<T>().PullAsync($"all{typeof(T).Name}", _mobileService.GetSyncTable<T>().CreateQuery());
 			}
 			catch (Exception ex)
 			{
 				System.Diagnostics.Debug.WriteLine($"Error during Sync occurred: {ex.Message}");
 			}
+		}
+
+		public async Task<bool> LoginAsync()
+		{
+			await Initialize();
+
+			var success = false;
+			var message = string.Empty;
+
+			try
+			{
+				// Sign in with Facebook login using a server-managed flow.
+				if (_user == null)
+				{
+					_user = await DependencyService.Get<IAuthenticate>().Authenticate(_mobileService);
+					if (_user != null)
+					{
+						message = string.Format($"You are now signed-in as {_user.UserId}.");
+						success = true;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				message = ex.Message;
+			}
+
+			await App.Current.MainPage.DisplayAlert("Sign-in result", message, "OK");
+
+			return success;
 		}
 		#endregion
 	}

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace UITestSampleApp
 {
@@ -11,5 +13,6 @@ namespace UITestSampleApp
 		Task UpdateItem<T>(T item) where T : EntityData;
 		Task RemoveItem<T>(T item) where T : EntityData;
 		Task SyncItems<T>() where T : EntityData;
+		Task<bool> LoginAsync();
 	}
 }

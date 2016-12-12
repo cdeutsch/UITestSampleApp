@@ -9,7 +9,7 @@ using UITestSampleApp.Shared;
 
 namespace MyLoginUI.Pages
 {
-	public class ReusableLoginPage : ContentPage
+	public abstract class ReusableLoginPage : ContentPage
 	{
 		#region LoginPage Properties
 
@@ -32,7 +32,7 @@ namespace MyLoginUI.Pages
 		#region Internal Global References
 
 		Image logo;
-		StyledButton loginButton, newUserSignUpButton, forgotPasswordButton;
+		StyledButton loginButton, newUserSignUpButton, forgotPasswordButton, aadSignInButton;
 		StyledEntry loginEntry, passwordEntry;
 		Label logoSlogan, rememberMe;
 		Switch saveUsername;
@@ -98,6 +98,10 @@ namespace MyLoginUI.Pages
 				AutomationId = AutomationIdConstants.ForgotPasswordButton,
 				Text = "Forgot Password?",
 			};
+			aadSignInButton = new StyledButton(Borders.None)
+			{
+				Text = "Login Using Active Directory"
+			};
 			rememberMe = new Label
 			{
 				Opacity = 0,
@@ -133,6 +137,10 @@ namespace MyLoginUI.Pages
 			{
 				ForgotPassword();
 			};
+			aadSignInButton.Clicked += (object sender, EventArgs e) =>
+			{
+				AadSignInButton();
+			};
 		}
 
 		void AddConstraintsToChildren()
@@ -145,6 +153,7 @@ namespace MyLoginUI.Pages
 			Func<RelativeLayout, double> getRememberMeWidth = (p) => rememberMe.Measure(MainLayout.Width, MainLayout.Height).Request.Width;
 			Func<RelativeLayout, double> getRememberMeHeight = (p) => rememberMe.Measure(MainLayout.Width, MainLayout.Height).Request.Height;
 			Func<RelativeLayout, double> getSwitchWidth = (p) => saveUsername.Measure(MainLayout.Width, MainLayout.Height).Request.Width;
+			Func<RelativeLayout, double> getAadSignInButtonWidth = (p) => aadSignInButton.Measure(MainLayout.Width, MainLayout.Height).Request.Width;
 
 			MainLayout.Children.Add(
 				logo,
@@ -199,6 +208,10 @@ namespace MyLoginUI.Pages
 				xConstraint: Constraint.RelativeToParent(p => (p.Width / 2) - (getForgotButtonWidth(p) / 2)),
 				yConstraint: Constraint.RelativeToView(newUserSignUpButton, (p, v) => v.Y + newUserSignUpButton.Height + _relativeLayoutPadding)
 			);
+			MainLayout.Children.Add(aadSignInButton,
+				Constraint.RelativeToParent(p => (p.Width / 2) - (getAadSignInButtonWidth(p) / 2)),
+				Constraint.RelativeToParent((parent) => forgotPasswordButton.Y + getForgotButtonHeight(parent) + _relativeLayoutPadding)
+		   	);
 		}
 
 		#endregion
@@ -209,17 +222,13 @@ namespace MyLoginUI.Pages
 		{
 		}
 
-		public virtual void Login(string userName, string passWord, bool saveUserName)
-		{
-		}
+		public abstract void Login(string userName, string passWord, bool saveUserName);
 
-		public virtual void NewUserSignUp()
-		{
-		}
+		public abstract void NewUserSignUp();
 
-		public virtual void ForgotPassword()
-		{
-		}
+		public abstract void ForgotPassword();
+
+		public abstract void AadSignInButton();
 
 		#endregion
 
@@ -255,6 +264,7 @@ namespace MyLoginUI.Pages
 					var passwordEntryAnimationTask = passwordEntry?.FadeTo(1, 250);
 					var saveUsernameAnimationTask = saveUsername?.FadeTo(1, 250);
 					var rememberMeAnimationTask = rememberMe?.FadeTo(1, 250);
+					var aadSignInButtonAnimationTask = aadSignInButton?.FadeTo(1, 250);
 					var loginButtonAnimationTask = loginButton?.FadeTo(1, 249);
 
 					animationTaskList = new List<Task>
@@ -266,6 +276,7 @@ namespace MyLoginUI.Pages
 						passwordEntryAnimationTask,
 						saveUsernameAnimationTask,
 						rememberMeAnimationTask,
+						aadSignInButtonAnimationTask,
 						loginButtonAnimationTask
 					};
 
@@ -285,7 +296,6 @@ namespace MyLoginUI.Pages
 			if (!String.IsNullOrEmpty(password))
 				loginEntry.Text = password;
 		}
-
 		#endregion
 
 	}

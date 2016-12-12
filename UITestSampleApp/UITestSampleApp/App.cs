@@ -33,6 +33,16 @@ namespace UITestSampleApp
 			MainPage = Navigation;
 		}
 
+		public void OpenListViewPageUsingDeepLinking()
+		{
+			OnAppLinkRequestReceived(new Uri($"{AppLinkExtensions.BaseUrl}{DeepLinkingIdConstants.ListPageId}"));
+		}
+		
+		public void OpenListViewPageUsingNavigation()
+		{
+			NavigateToListViewPage();
+		}
+
 		protected override void OnStart()
 		{
 			int majorVersion, minorVersion;
@@ -55,16 +65,6 @@ namespace UITestSampleApp
 			}
 		}
 
-		protected override void OnSleep()
-		{
-			// Handle when your app sleeps
-		}
-
-		protected override void OnResume()
-		{
-			// Handle when your app resumes
-		}
-
 		protected override void OnAppLinkRequestReceived(Uri uri)
 		{
 			if (uri.ToString().Equals($"{AppLinkExtensions.BaseUrl}{DeepLinkingIdConstants.ListPageId}"))
@@ -75,15 +75,6 @@ namespace UITestSampleApp
 			base.OnAppLinkRequestReceived(uri);
 		}
 
-		public void OpenListViewPageUsingDeepLinking()
-		{
-			OnAppLinkRequestReceived(new Uri($"{AppLinkExtensions.BaseUrl}{DeepLinkingIdConstants.ListPageId}"));
-		}
-
-		public void OpenListViewPageUsingNavigation()
-		{
-			NavigateToListViewPage();
-		}
 
 		void NavigateToListViewPage()
 		{

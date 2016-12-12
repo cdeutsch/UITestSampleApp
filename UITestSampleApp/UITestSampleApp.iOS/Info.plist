@@ -6,8 +6,6 @@
 	<string>com.minnick.uitestsampleapp</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>MinimumOSVersion</key>
-	<string>7.0</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
@@ -40,5 +38,7 @@
 	<string>3.0</string>
 	<key>CFBundleName</key>
 	<string>UITestSampleApp</string>
+	<key>MinimumOSVersion</key>
+	<string>8.0</string>
 </dict>
 </plist>

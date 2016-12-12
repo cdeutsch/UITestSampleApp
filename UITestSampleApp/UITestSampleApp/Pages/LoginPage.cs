@@ -5,7 +5,9 @@ using Xamarin.Forms;
 
 using MyLoginUI.Pages;
 
+using MyLoginUI.Views;
 using UITestSampleApp.Shared;
+using System.Threading.Tasks;
 
 namespace UITestSampleApp
 {
@@ -19,7 +21,6 @@ namespace UITestSampleApp
 		public LoginPage()
 		{
 			AutomationId = "loginPage";
-
 #if DEBUG
 			var crashButton = new Button
 			{
@@ -33,12 +34,10 @@ namespace UITestSampleApp
 				throw new Exception("Crash Button Tapped");
 			};
 
-			MainLayout.Children.Add(crashButton,
-				Constraint.RelativeToParent((parent) => parent.X),
-				Constraint.RelativeToParent((parent) => parent.Y)
-			);
+			AddCrashButtonToTopLeftCorner(crashButton);
 #endif
 		}
+
 		#endregion
 
 		#region Properties
@@ -63,8 +62,6 @@ namespace UITestSampleApp
 		#region Methods
 		public override async void Login(string userName, string passWord, bool saveUserName)
 		{
-			base.Login(userName, passWord, saveUserName);
-
 			var success = await DependencyService.Get<ILogin>().CheckLogin(userName, passWord);
 			if (success)
 			{
@@ -82,14 +79,7 @@ namespace UITestSampleApp
 					insightsDict.Add("Saves username", "No");
 				}
 
-				App.IsLoggedIn = true;
-
-				if (Device.OS == TargetPlatform.iOS)
-					await Navigation.PopAsync();
-				else {
-					await Navigation.PushAsync(new FirstPage(), false);
-					Navigation.RemovePage(this);
-				}
+				await NavigateIntoAppFromLoginScreen();
 			}
 			else {
 				var signUp = await DisplayAlert("Invalid Login", "Sorry, we didn't recoginize the username or password. Feel free to sign up for free if you haven't!", "Sign up", "Try again");
@@ -105,9 +95,16 @@ namespace UITestSampleApp
 			}
 		}
 
+		public override async void AadSignInButton()
+		{
+			var loginSuccessful = await DependencyService.Get<IDataService>().LoginAsync();
+
+			if (loginSuccessful)
+				await NavigateIntoAppFromLoginScreen();
+		}
+
 		public override void NewUserSignUp()
 		{
-			base.NewUserSignUp();
 			Navigation.PushModalAsync(new NewUserSignUpPage());
 		}
 
@@ -132,6 +129,29 @@ namespace UITestSampleApp
 
 				isInitialized = true;
 			}
+		}
+
+		async Task NavigateIntoAppFromLoginScreen()
+		{
+			App.IsLoggedIn = true;
+
+			if (Device.OS == TargetPlatform.iOS)
+			{
+				await Navigation.PopAsync();
+			}
+			else
+			{
+				await Navigation.PushAsync(new FirstPage(), false);
+				Navigation.RemovePage(this);
+			}
+		}
+
+		void AddCrashButtonToTopLeftCorner(View crashButton)
+		{
+			MainLayout.Children.Add(crashButton,
+				Constraint.RelativeToParent((parent) => parent.X),
+				Constraint.RelativeToParent((parent) => parent.Y)
+			);
 		}
 		#endregion
 	}

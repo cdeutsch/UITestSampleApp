@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants\DeepLinkingIdConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants\AnalyticsConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants\StyleConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants\AzureActiveDirectoryConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Constants\" />
