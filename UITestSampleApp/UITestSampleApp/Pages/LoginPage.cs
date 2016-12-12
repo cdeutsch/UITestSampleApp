@@ -108,6 +108,11 @@ namespace UITestSampleApp
 			Navigation.PushModalAsync(new NewUserSignUpPage());
 		}
 
+		public override void ForgotPassword()
+		{
+			//ToDo
+		}
+
 		public override void RunAfterAnimation()
 		{
 			base.RunAfterAnimation();
