@@ -3,8 +3,8 @@
 	public static class AnalyticsConstants
 	{
 		#region Mobile Center
-		public const string MobileCenteriOSApiKey = "36f454de-dbe0-4a38-a11b-68323a21a52e";
-        public const string MobileCenterDroidApiKey = "a5390c65-0b3a-4251-90d9-d5089cac0469";
+		public const string MobileCenteriOSApiKey = "";
+        public const string MobileCenterDroidApiKey = "5ed41e92-5f13-40de-b978-ed19e5c44757";
 		#endregion
 
 		#region Login Page
