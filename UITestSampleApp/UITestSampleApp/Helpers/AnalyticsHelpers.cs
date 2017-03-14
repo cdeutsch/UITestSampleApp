@@ -11,6 +11,7 @@ namespace UITestSampleApp
 	{
 		public static void Start(string APIKey)
 		{
+			MobileCenter.SetServerUrl("https://in-staging-south-centralus.staging.avalanch.es");
 			MobileCenter.Configure(APIKey);
 			MobileCenter.Start(typeof(Analytics), typeof(Crashes));
 			Analytics.Enabled = true;

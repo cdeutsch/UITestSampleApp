@@ -4,7 +4,7 @@
 	{
 		#region Mobile Center
 		public const string MobileCenteriOSApiKey = "36f454de-dbe0-4a38-a11b-68323a21a52e";
-        public const string MobileCenterDroidApiKey = "844c6c8e-2c35-473f-b920-8e283333b60c";
+        public const string MobileCenterDroidApiKey = "a5390c65-0b3a-4251-90d9-d5089cac0469";
 		#endregion
 
 		#region First Page
