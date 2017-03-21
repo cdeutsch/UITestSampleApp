@@ -97,6 +97,7 @@ namespace UITestSampleApp
 		public override async void Login(string userName, string passWord, bool saveUserName)
 		{
 			base.Login(userName, passWord, saveUserName);
+			AnalyticsHelpers.TrackEvent(AnalyticsConstants.LoginAttempt);
 
 			var success = await DependencyService.Get<ILogin>().CheckLogin(userName, passWord);
 			if (success)
@@ -155,6 +156,7 @@ namespace UITestSampleApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
+			AnalyticsHelpers.TrackEvent(AnalyticsConstants.LoginPageOnAppeared);
 
 			//Need bug fixed on Material Design for PopToRootAsync() 
 			//https://bugzilla.xamarin.com/show_bug.cgi?id=36907
