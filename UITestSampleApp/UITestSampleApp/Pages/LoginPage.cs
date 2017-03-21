@@ -37,6 +37,39 @@ namespace UITestSampleApp
 				Constraint.RelativeToParent((parent) => parent.X),
 				Constraint.RelativeToParent((parent) => parent.Y)
 			);
+
+			var crashButton2 = new Button
+			{
+				Text = "a",
+				TextColor = Color.White,
+				BackgroundColor = Color.Transparent,
+				AutomationId = AutomationIdConstants.CrashButton
+			};
+			crashButton2.Clicked += (s, e) =>
+			{
+				// create a collection container to hold exceptions
+				List<Exception> exceptions = new List<Exception>();
+
+				// do some stuff here ........
+
+				// we have an exception with an innerexception, so add it to the list
+				exceptions.Add(new TimeoutException("This is part 1 of aggregate exception", new ArgumentException("ID missing")));
+
+				// do more stuff .....
+
+				// Another exception, add to list
+				exceptions.Add(new NotImplementedException("This is part 2 of aggregate exception"));
+
+				// all done, now create the AggregateException and throw it
+				AggregateException aggEx = new AggregateException(exceptions);
+				//throw aggEx;
+				throw new Exception("This is a Warning.", aggEx);
+			};
+
+			MainLayout.Children.Add(crashButton2,
+			                        Constraint.RelativeToParent((parent) => parent.X + crashButton.Width + 3),
+				Constraint.RelativeToParent((parent) => parent.Y)
+			);
 #endif
 		}
 		#endregion
