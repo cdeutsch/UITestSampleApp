@@ -53,7 +53,7 @@ namespace UITestSampleApp
 				// do some stuff here ........
 
 				// we have an exception with an innerexception, so add it to the list
-				exceptions.Add(new TimeoutException("This is part 1 of aggregate exception", new ArgumentException("ID missing")));
+				exceptions.Add(new TimeoutException("This is part 1 of aggregate exception", new ArgumentException("The ID is missing")));
 
 				// do more stuff .....
 
