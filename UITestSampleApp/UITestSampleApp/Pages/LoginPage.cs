@@ -53,12 +53,12 @@ namespace UITestSampleApp
 				// do some stuff here ........
 
 				// we have an exception with an innerexception, so add it to the list
-				exceptions.Add(new TimeoutException("This is part 1 of aggregate exception", new ArgumentException("The ID is missing. (Inner most exception)")));
+				exceptions.Add(new TimeoutException("This is part One of aggregate exception", new ArgumentException("The ID is missing. (Inner most exception)")));
 
 				// do more stuff .....
 
 				// Another exception, add to list
-				exceptions.Add(new NotImplementedException("This is part 2 of aggregate exception"));
+				exceptions.Add(new NotImplementedException("This is part Two of aggregate exception"));
 
 				// all done, now create the AggregateException and throw it
 				AggregateException aggEx = new AggregateException(exceptions);
